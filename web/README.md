@@ -1,21 +1,72 @@
-# React + TypeScript + Vite + shadcn/ui
+# HotelPilot — Frontend
 
-This is a template for a new Vite project with React, TypeScript, and shadcn/ui.
+HotelPilot is a hotel management and RFID smart access control platform. This
+package contains the **frontend-only prototype**: a complete, interactive UI
+with simulated functionality backed by a centralized mock data layer and
+`localStorage` persistence. No backend, database, or real authentication is
+wired up yet — the existing Django project in [`../backend`](../backend) will
+be connected in a later phase.
 
-## Adding components
+## Tech stack
 
-To add components to your app, run the following command:
+- React 19 + Vite + TypeScript
+- React Router (`react-router-dom`, `HashRouter`)
+- Tailwind CSS v4 (brand theme defined in `src/index.css`)
+- shadcn/ui + base-ui primitives for low-level components (e.g. `Button`)
+- React Icons (`react-icons/fi`) for iconography
+- Recharts for dashboard and report charts
+
+## Getting started
 
 ```bash
-npx shadcn@latest add button
+npm install
+npm run dev
 ```
 
-This will place the ui components in the `src/components` directory.
+### Demo accounts
 
-## Using components
+Sign in on the login screen with any of the following (password:
+`password123`):
 
-To use the components in your app, import them as follows:
+| Email                     | Role          |
+| ------------------------- | ------------- |
+| admin@hotelpilot.com      | Administrator |
+| manager@hotelpilot.com    | Manager       |
+| reception@hotelpilot.com  | Receptionist  |
+| accounts@hotelpilot.com   | Accountant    |
 
-```tsx
-import { Button } from "@/components/ui/button"
+## Project structure
+
+```
+src/
+├── components/        # Reusable UI building blocks
+│   ├── charts/         # ChartCard wrapper around Recharts
+│   ├── common/         # StatusBadge, Modal, DataTable helpers, etc.
+│   ├── forms/           # FormInput, FormSelect, FormTextarea, DatePicker
+│   ├── tables/          # Generic DataTable
+│   └── ui/              # shadcn/ui primitives (Button, ...)
+├── context/            # AppDataContext (mock data + CRUD), AuthContext, ToastContext
+├── data/               # Seed data for ~25 rooms, guests, reservations, etc.
+├── hooks/              # Shared hooks (e.g. useSyncOnChange)
+├── layouts/            # Sidebar, Topbar, DashboardLayout
+├── lib/                # Formatting, CSS class merging, CSV export helpers
+├── pages/              # One folder per module (Dashboard, Reservations, ...)
+├── routes/             # ProtectedRoute guard
+├── services/           # localStorage wrapper
+└── types/              # Shared domain types
+```
+
+## Data & persistence
+
+All hotel data (guests, rooms, reservations, RFID cards, access logs,
+payments, staff, settings) lives in `AppDataContext` and is persisted to
+`localStorage` on every change, so changes survive page reloads. Key
+cross-module workflows (check-in, checkout, payments, card lifecycle) are
+implemented as single context actions so the room, reservation, RFID card and
+access log records always stay consistent with one another.
+
+## Adding shadcn/ui components
+
+```bash
+npx shadcn@latest add <component>
 ```

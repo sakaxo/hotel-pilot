@@ -7,6 +7,10 @@
   "compilerOptions": {
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+
+    /* Allow JavaScript files to be imported and compiled */
+    "allowJs": true,
+    "checkJs": false
   }
 }
