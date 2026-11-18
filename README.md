@@ -99,11 +99,38 @@ Features include:
 - Guest status management.
 - Guest-related records.
 
-### 3. Guest Stays and Check-in Management
+### 3. Reservations
+
+Manage room bookings from creation through arrival.
+
+Features include:
+
+- Reservation creation and editing.
+- Guest and room selection.
+- Check-in and checkout dates.
+- Adult and child occupancy.
+- Nightly rate, discounts and total amount calculation.
+- Room availability and double-booking validation.
+- Special requests.
+- Reservation cancellation and no-show status.
+- Reservation status tracking.
+
+**Reservation statuses**
+
+| Status      | Description                       |
+| ----------- | --------------------------------- |
+| Pending     | Awaiting confirmation             |
+| Confirmed   | Booking confirmed for the guest   |
+| Checked In  | Guest has arrived and is in-house |
+| Checked Out | Guest stay has ended              |
+| Cancelled   | Reservation was cancelled         |
+| No Show     | Guest did not arrive              |
+
+### 4. Guest Stays and Check-in Management
 
 Manage guest accommodation from check-in through checkout.
 
-The system is designed around a continuous walk-in check-in process.
+The system is designed around a continuous walk-in check-in and reservation check-in process.
 
 Features include:
 
@@ -112,11 +139,12 @@ Features include:
 - Specific room allocation.
 - Stay duration management.
 - Guest occupancy information.
+- RFID card verification before assignment.
 - RFID card assignment.
 - Checkout processing.
 - Guest stay history.
 
-### 4. RFID Card Management
+### 5. RFID Card Management
 
 Manage the hotel's RFID card inventory.
 
@@ -127,8 +155,9 @@ Features include:
 - Card inventory management.
 - Card status management.
 - Card availability tracking.
+- Card verification and availability lookup.
 
-### 5. Room Access Management
+### 6. Room Access Management
 
 Connect RFID cards to individual guest stays.
 
@@ -142,16 +171,69 @@ Features include:
 - Card availability validation.
 - Access assignment tracking.
 - Access revocation during checkout.
+- Access event history with granted and denied results.
+- Access activity filtering by room, result and date.
 
-### 6. Room Operations
+### 7. Room Operations
 
 Support the operational lifecycle of hotel rooms.
 
 When a guest checks out, the room moves into an inspection state. Hotel staff can then mark the room as available or under maintenance.
 
-### 7. Dashboard and Reporting
+### 8. Payments and Billing
 
-A centralized interface for monitoring hotel operations, with reporting and analytics intended to provide visibility into guest stays, room occupancy, and other operational activities.
+Track guest payments, revenue and outstanding balances against reservations.
+
+Features include:
+
+- Payment recording against a reservation.
+- Multiple payment methods.
+- Partial payments and outstanding balances.
+- Payment status tracking.
+- Payment receipts.
+- Refund tracking.
+- Revenue and transaction history.
+
+### 9. Staff Management
+
+Maintain the hotel's staff directory and role assignments.
+
+Features include:
+
+- Staff registration and profile management.
+- Role assignment.
+- Department and contact details.
+- Staff status management.
+- Staff activation and deactivation.
+
+### 10. Staff Authentication
+
+Provide a sign-in experience for hotel staff and protect access to the management console.
+
+The current implementation is a frontend prototype using demo staff accounts to represent the Administrator, Manager, Receptionist and Accountant roles. Backend authentication and authorization are planned for a later stage.
+
+### 11. Dashboard and Reporting
+
+A centralized interface for monitoring hotel operations.
+
+The dashboard provides an operational overview of room status, arrivals and departures, revenue and outstanding balances.
+
+Reporting covers occupancy, revenue, reservations, guests, payments and RFID access activity, with date filtering, CSV export and printable output.
+
+### 12. System Settings
+
+Configure hotel-wide preferences from a dedicated settings area.
+
+Settings include:
+
+- Hotel profile and general preferences.
+- Room categories and rates.
+- Reservation policies.
+- Check-in and checkout policies.
+- Payment configuration.
+- Access control preferences.
+- Staff and role overview.
+- Notification preferences.
 
 ---
 
@@ -204,8 +286,10 @@ This repository contains the web application and backend.
            |                     |
            +------ REST API -----+
                       |
-                  SQL Database
+               SQLite Database
 ```
+
+The rooms, room categories, guests, reservations and RFID card modules are connected to the backend REST API. The dashboard, operations, payments, staff, access log and settings modules currently run against a centralized frontend data layer for prototyping while their backend APIs are developed.
 
 ### Planned Hardware Integration
 
@@ -233,24 +317,26 @@ The software and hardware components will be developed separately and integrated
 
 ### Web Application
 
-- React
+- React 19
 - Vite
-- JavaScript
-- Tailwind CSS
+- JavaScript with TypeScript tooling
+- Tailwind CSS v4
 - React Router
-- React Icons
+- shadcn/ui and Base UI
+- React Icons and Lucide
 - Recharts
 
 ### Backend
 
 - Python
-- Django
+- Django 6
 - Django REST Framework
 - RESTful APIs
+- CORS handling
 
 ### Database
 
-- SQL relational database.
+- SQLite relational database for development.
 
 ### Planned Hardware Technologies
 
@@ -309,6 +395,7 @@ HotelPilot/
 │   ├── access_control/
 │   ├── reservations/
 │   ├── manage.py
+│   ├── requirements.txt
 │   └── ...
 │
 └── README.md
@@ -324,10 +411,9 @@ The hardware firmware will be maintained separately as part of the broader Hotel
 
 Ensure the following are installed:
 
-- Python 3.10 or later.
+- Python 3.12 or later.
 - Node.js and npm.
 - Git.
-- The SQL database engine configured for the project.
 
 ### 1. Clone the Repository
 
@@ -371,7 +457,7 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-Configure the environment variables and database settings required by the project.
+The project uses SQLite by default, so no separate database engine is required. Configure any environment variables needed by the project.
 
 Run migrations:
 
@@ -382,19 +468,19 @@ python manage.py migrate
 Start the development server:
 
 ```bash
-python manage.py runserver
+python manage.py runserver 8001
 ```
 
 The backend will be available at:
 
-`http://127.0.0.1:8000/`
+`http://127.0.0.1:8001/`
 
 ### 3. Frontend Setup
 
-Open another terminal and navigate to the frontend directory:
+Open another terminal and navigate to the web directory:
 
 ```bash
-cd frontend
+cd web
 ```
 
 Install dependencies:
@@ -403,10 +489,10 @@ Install dependencies:
 npm install
 ```
 
-Create a `.env` file:
+Set the backend API URL in the `.env` file:
 
 ```env
-VITE_API_BASE_URL=http://127.0.0.1:8000
+VITE_API_BASE_URL=http://127.0.0.1:8001
 ```
 
 Start the development server:
@@ -419,28 +505,38 @@ The frontend will be available at the local URL provided by Vite, typically:
 
 `http://localhost:5173/`
 
+The frontend connects to the backend for rooms, guests, reservations and RFID cards. The remaining modules currently use local prototype data and can be explored independently.
+
 ---
 
 ## Development Status
 
 The project is being developed incrementally to validate the core software functionality and prepare for future hardware integration.
 
-| Component                         | Status         |
-| --------------------------------- | -------------- |
-| Frontend foundation               | Implemented    |
-| Backend foundation                | Implemented    |
-| Room categories                   | Implemented    |
-| Room management                   | Implemented    |
-| Guest management                  | Implemented    |
-| RFID card inventory               | Implemented    |
-| Guest stay management             | In development |
-| RFID access assignments           | In development |
-| Check-in and checkout workflow    | In development |
-| Dashboard and reporting           | In development |
-| Smart lock hardware               | Planned        |
-| Device firmware                   | Planned        |
-| Hardware-to-backend communication | Planned        |
-| Electronic door lock integration  | Planned        |
+| Component                         | Status      |
+| --------------------------------- | ----------- |
+| Frontend foundation               | Implemented |
+| Backend foundation                | Implemented |
+| Room categories                   | Implemented |
+| Room management                   | Implemented |
+| Guest management                  | Implemented |
+| Reservations                      | Implemented |
+| RFID card inventory               | Implemented |
+| Guest stay management             | Implemented |
+| RFID access assignments           | Implemented |
+| Check-in and checkout workflow    | Implemented |
+| Payments and billing              | Prototype   |
+| Staff management                  | Prototype   |
+| Staff authentication              | Prototype   |
+| Access logs                       | Prototype   |
+| Dashboard and reporting           | Prototype   |
+| System settings                   | Prototype   |
+| Smart lock hardware               | Planned     |
+| Device firmware                   | Planned     |
+| Hardware-to-backend communication | Planned     |
+| Electronic door lock integration  | Planned     |
+
+Implemented items are available through the backend API and connected frontend modules. Prototype items are functional in the frontend using local data while their backend APIs are developed.
 
 _These statuses reflect the current development direction and will be updated as implementation and testing progress._
 
@@ -461,7 +557,7 @@ The development process involves:
 5. Testing and validating the complete software-hardware workflow.
 6. Using the results to inform the architecture and requirements of a production-ready product.
 
-Authentication and authorization are not currently implemented. The current development focus is on the core operational workflows and software-hardware communication.
+Backend authentication and authorization are not currently implemented. The frontend includes a prototype staff sign-in with demo accounts, while the current development focus remains the core operational workflows and software-hardware communication.
 
 ---
 
@@ -512,7 +608,7 @@ Unless a licence is added, the source code remains subject to its default copyri
 | Current Scope       | Software and hardware validation           |
 | Frontend            | React + Vite                               |
 | Backend             | Django REST Framework                      |
-| Database            | SQL                                        |
+| Database            | SQLite (development)                       |
 | Hardware            | Separate development component             |
 | Development Status  | Active Development                         |
 | Long-term Direction | Production-ready hotel technology platform |
@@ -521,4 +617,4 @@ Unless a licence is added, the source code remains subject to its default copyri
 
 **HotelPilot**
 
-Smarter Hotel Operations. Connected Room Access.\_
+Smarter Hotel Operations. Connected Room Access.
