@@ -269,16 +269,38 @@ This repository contains the HotelPilot web application and backend.
 ```text
 HotelPilot/
 │
-├── frontend/
+├── web/
 │   ├── public/
 │   ├── src/
+│   │   ├── assets/
 │   │   ├── components/
+│   │   │   ├── charts/
+│   │   │   ├── common/
+│   │   │   ├── forms/
+│   │   │   ├── tables/
+│   │   │   └── ui/
 │   │   ├── context/
+│   │   ├── data/
 │   │   ├── hooks/
+│   │   ├── layouts/
 │   │   ├── lib/
 │   │   ├── pages/
+│   │   │   ├── Access/
+│   │   │   ├── Auth/
+│   │   │   ├── Dashboard/
+│   │   │   ├── Guests/
+│   │   │   ├── Operations/
+│   │   │   ├── Payments/
+│   │   │   ├── Reports/
+│   │   │   ├── Reservations/
+│   │   │   ├── Rooms/
+│   │   │   ├── Settings/
+│   │   │   └── Staff/
+│   │   ├── routes/
+│   │   ├── services/
 │   │   └── ...
-│   └── package.json
+│   ├── package.json
+│   └── ...
 │
 ├── backend/
 │   ├── config/
@@ -310,7 +332,7 @@ Ensure the following are installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/HotelPilot.git
+git clone https://github.com/sakaxo/hotel-pilot.git
 
 cd HotelPilot
 ```
