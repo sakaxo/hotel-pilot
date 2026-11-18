@@ -9,7 +9,7 @@ be connected in a later phase.
 
 ## Tech stack
 
-- React 19 + Vite + TypeScript
+- React 19 + Vite, with JavaScript application source and TypeScript-based tooling
 - React Router (`react-router-dom`, `HashRouter`)
 - Tailwind CSS v4 (brand theme defined in `src/index.css`)
 - shadcn/ui + base-ui primitives for low-level components (e.g. `Button`)
@@ -53,7 +53,6 @@ src/
 ├── pages/              # One folder per module (Dashboard, Reservations, ...)
 ├── routes/             # ProtectedRoute guard
 ├── services/           # localStorage wrapper
-└── types/              # Shared domain types
 ```
 
 ## Data & persistence
